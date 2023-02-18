@@ -1,5 +1,8 @@
 import { Component } from 'react';
-import css from './Feedback.module.css'
+
+import Statistics from './Statistics/Statistics';
+import FeedbackOptions from './FeedbackOptions/FeedbackOptions';
+import Section from './Section/Section';
 
 class Feedback extends Component{
   state = {
@@ -8,30 +11,17 @@ class Feedback extends Component{
     bad: 0
 }
 
-  addGoodFeedback = () => {
+  handleLeaveFeedback = option => {
     this.setState(prevState => ({
-      good: prevState.good + 1
-      })
-    )
-  }
+      [option]: prevState[option] + 1
+    }));
+  };
 
-  addNeutralFeedback = () => {
-    this.setState(prevState => ({
-      neutral: prevState.neutral + 1
-      })
-    )
-  }
 
-  addBadFeedback = () => {
-    this.setState(prevState => ({
-      bad: prevState.bad + 1
-      })
-    )
-  }
 
   countTotalFeedback = () => {
- return Object.keys(this.state).reduce((acc, el) => {
-   return acc + this.state[el]
+ return Object.keys(this.state).reduce((acc, elem) => {
+   return acc + this.state[elem]
  },0)
   }
 
@@ -47,23 +37,15 @@ class Feedback extends Component{
   }
 
   render() {
-    const {good ,neutral ,bad} =this.state
+    const {good ,neutral ,bad} =this.state;
     return(
       <div>
-        <h2>Please leave feedback</h2>
-        <ul className={css.buttonList}>
-        <li> <button onClick={this.addGoodFeedback}>Good</button></li>
-         <li><button onClick={this.addNeutralFeedback} >Neutral</button></li>
-       <li> <button onClick={this.addBadFeedback}>Bad</button></li>
-        </ul>
-        <h2>Staticks</h2>
-        <ul>
-          <li>Good: {good}</li>
-          <li>Neutral: {neutral}</li>
-          <li>Bad: {bad}</li>
-          <li>Total: {this.countTotalFeedback()}</li>
-          <li>Positive feedback: {this.countPositiveFeedbackPercentage()}</li>
-        </ul>
+        <Section title={"Please leave feedback"}>
+          <FeedbackOptions  options={["good","neutral","bad"]} onLeaveFeedback={this.handleLeaveFeedback}/>
+        </Section>
+        <Section title={"Staticks"}>
+          <Statistics good={good} neutral={neutral} bad={bad} total={this.countTotalFeedback()} positivePercentage={this.countPositiveFeedbackPercentage()}/>
+        </Section>
       </div>
     )
   }
